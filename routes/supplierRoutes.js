@@ -1,18 +1,18 @@
-// src/routes/supplierRoutes.js
-
+// routes/supplierRoutes.js
 const express = require('express');
 const router = express.Router();
-const supplierController = require('../controllers/supplierController');
+const {
+  getAllSuppliers,
+  getSupplierById,
+  createSupplier,
+  updateSupplier,
+  deleteSupplier
+} = require('../controllers/supplierController');
 
-// Routes for /api/suppliers
-router.route('/')
-    .get(supplierController.getAllSuppliers)
-    .post(supplierController.createSupplier);
-
-// Routes for /api/suppliers/:id
-router.route('/:id')
-    .get(supplierController.getSupplierById)
-    .put(supplierController.updateSupplier)
-    .delete(supplierController.deleteSupplier);
+router.get('/', getAllSuppliers);
+router.get('/:id', getSupplierById);
+router.post('/', createSupplier);
+router.put('/:id', updateSupplier);
+router.delete('/:id', deleteSupplier);
 
 module.exports = router;

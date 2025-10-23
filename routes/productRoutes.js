@@ -1,17 +1,18 @@
-// src/routes/productRoutes.js - UPDATED
+// routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
-const productController = require('../controllers/productController');
+const {
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct
+} = require('../controllers/productController');
 
-// Routes for /api/products (List and Create)
-router.route('/')
-    .get(productController.getAllProducts)
-    .post(productController.createProduct);
-
-// Routes for /api/products/:id (Read One, Update, Delete)
-router.route('/:id')
-    .get(productController.getProductById)
-    .put(productController.updateProduct)
-    .delete(productController.deleteProduct);
+router.get('/', getAllProducts);
+router.get('/:id', getProductById);
+router.post('/', createProduct);
+router.put('/:id', updateProduct);
+router.delete('/:id', deleteProduct);
 
 module.exports = router;

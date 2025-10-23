@@ -1,18 +1,18 @@
-// src/routes/orderRoutes.js
-
+// routes/orderRoutes.js
 const express = require('express');
 const router = express.Router();
-const orderController = require('../controllers/orderController');
+const {
+  createOrder,
+  getAllOrders,
+  getOrderById,
+  updateOrder,
+  deleteOrder
+} = require('../controllers/orderController');
 
-// Routes for /api/orders (List and Create)
-router.route('/')
-    .get(orderController.getAllOrders)
-    .post(orderController.createOrder);
-
-// Routes for /api/orders/:id (Read One, Update, Delete)
-router.route('/:id')
-    .get(orderController.getOrderById)
-    .put(orderController.updateOrder)
-    .delete(orderController.deleteOrder);
+router.post('/', createOrder);
+router.get('/', getAllOrders);
+router.get('/:id', getOrderById);
+router.put('/:id', updateOrder);
+router.delete('/:id', deleteOrder);
 
 module.exports = router;

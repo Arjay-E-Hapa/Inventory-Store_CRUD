@@ -1,9 +1,19 @@
+// models/userModel.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  // your schema fields here
+  name: { 
+    type: String, 
+    required: true 
+  },
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  age: Number
+}, { 
+  timestamps: true 
 });
 
-const User = mongoose.models.User || mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

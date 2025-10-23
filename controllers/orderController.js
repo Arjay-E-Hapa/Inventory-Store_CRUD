@@ -1,4 +1,4 @@
-// src/controllers/orderController.js - UPDATED for Pagination & Filtering
+// src/controllers/orderController.js
 
 const Order = require('../models/Order');
 const Product = require('../models/Product');
@@ -13,7 +13,8 @@ async function manageStock(order, action, session) {
     for (const item of order.items) {
         const product = await Product.findById(item.productId).session(session);
         if (!product) {
-            throw new new Error(`Product not found for ID: ${item.productId}`);
+            // FIXED: Removed double 'new' keyword
+            throw new Error(`Product not found for ID: ${item.productId}`);
         }
 
         const change = item.qty;
@@ -214,10 +215,9 @@ exports.deleteOrder = async (req, res) => {
 
         await session.commitTransaction();
         
-        // 🚨 MODIFIED RESPONSE: Return 200 OK with confirmation body 🚨
         res.status(200).json({
             message: `Order ${req.params.id} successfully deleted.`,
-            deletedOrder: orderToDelete // Sending the deleted document back
+            deletedOrder: orderToDelete
         });
 
     } catch (err) {

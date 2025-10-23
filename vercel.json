@@ -1,9 +1,11 @@
 {
-  "version": 2,
-  "builds": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "routes": [
     {
-      "src": "*.js",
-      "use": "@vercel/node"
+      "src": "/(.*)",
+      "dest": "index.js"
     }
   ]
 }

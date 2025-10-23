@@ -29,7 +29,6 @@ app.use('/api/users', userRoutes); // MOUNT USER ROUTES
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
 const PORT = process.env.PORT || 3000;
-connectDB().then(() => app.listen(PORT, () => console.log(`API running on port ${PORT}`)));
 
 // Export for Vercel
 module.exports = app;

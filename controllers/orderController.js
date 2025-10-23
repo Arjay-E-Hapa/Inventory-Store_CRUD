@@ -1,4 +1,4 @@
-// src/controllers/orderController.js
+// src/controllers/orderController.js - FIXED
 
 const Order = require('../models/Order');
 const Product = require('../models/Product');

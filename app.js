@@ -1,91 +1,127 @@
-// --- 1. Dependencies and Initialization ---
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
+// app.js - Complete Vercel-optimized version
 
-// Load environment variables (like MONGODB_URI)
-dotenv.config(); 
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+// IMPORT ROUTERS
+const productRoutes = require('./routes/productRoutes'); 
+const supplierRoutes = require('./routes/supplierRoutes'); 
+const orderRoutes = require('./routes/orderRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-// --- 2. Database Connection Logic (Replacing config/db.js) ---
-const MONGODB_URI = process.env.MONGODB_URI;
+// Middleware
+app.use(express.json());
+app.use(morgan('dev'));
+app.use(cors());
 
-// **Crucial Fix:** Ensure MONGODB_URI has the typo fixed on Vercel:
-// It must be: mongodb+srv://... and NOT MONmongodb+srv://...
+// Database connection with caching for serverless
+let cachedDb = null;
 
-const connectDB = async () => {
-    try {
-        await mongoose.connect(MONGODB_URI, {
-            // These options are often included for stable connections
-            serverSelectionTimeoutMS: 5000, 
-        });
-        console.log('MongoDB Connected Successfully');
-    } catch (err) {
-        console.error('MongoDB Connection Failed:', err.message);
-        // Exit process if connection fails to prevent server from running with no DB
-        process.exit(1); 
-    }
-};
+async function connectDB() {
+  if (cachedDb && mongoose.connection.readyState === 1) {
+    console.log('✅ Using cached database connection');
+    return cachedDb;
+  }
 
-// Execute the connection function
-connectDB();
+  const uri = process.env.MONGO_URI;
+  if (!uri) {
+    throw new Error('MONGO_URI missing from environment variables');
+  }
 
-// --- 3. Mongoose Product Model (Replacing models/productModel.js) ---
-const productSchema = new mongoose.Schema({
-    sku: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
-    price: { type: Number, required: true, min: 0 },
-    stock: { type: Number, required: true, default: 0, min: 0 }
-}, {
-    timestamps: true 
-});
-
-const Product = mongoose.model('Product', productSchema);
-
-// --- 4. Middleware Setup ---
-app.use(cors()); // Enable CORS for all origins (matching your original headers)
-app.use(express.json()); // Body parsing
-
-// --- 5. Product Controller Logic (Replacing controllers/productController.js) ---
-const getProducts = async (req, res) => {
-    try {
-        // Find all products in the database
-        const products = await Product.find({});
-        res.status(200).json(products);
-    } catch (error) {
-        // This catches the error if the DB query fails (e.g., if DB connection was lost)
-        console.error("Error fetching products:", error);
-        res.status(500).json({ error: "Server error fetching products." });
-    }
-};
-
-// --- 6. Routing (Replacing routes/productRoutes.js) ---
-// Note: We use the base path '/api' here because Vercel often maps the endpoint path.
-// The request was sent to: https://inventory-store-crud.vercel.app/api/products
-// So the route should be set up relative to '/api'.
-
-// Health Check Endpoint (from README.md)
-app.get('/health', (req, res) => {
-    // Check if MongoDB state is connected (1)
-    const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
-    res.status(200).json({
-        status: 'ok',
-        database: dbStatus,
-        uptime: process.uptime()
+  try {
+    const connection = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     });
+    
+    cachedDb = connection;
+    console.log('✅ MongoDB connected');
+    return connection;
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error.message);
+    throw error;
+  }
+}
+
+// Connect to DB on each request (serverless pattern)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('Database middleware error:', error);
+    res.status(500).json({ 
+      error: 'Database connection failed',
+      message: error.message 
+    });
+  }
 });
 
-// Products Route - GET /api/products
-app.get('/api/products', getProducts); 
+// MOUNT ROUTERS
+app.use('/api/products', productRoutes); 
+app.use('/api/suppliers', supplierRoutes); 
+app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
 
-// --- 7. Server Listener (For Local Development) ---
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+// Health check route
+app.get('/health', (_req, res) => {
+  res.json({ 
+    ok: true,
+    timestamp: new Date().toISOString(),
+    mongooseState: mongoose.connection.readyState,
+    env: process.env.NODE_ENV || 'development'
+  });
 });
 
-// --- 8. Export for Vercel Serverless Function ---
-// Vercel requires the Express app instance to be exported
+// Root route
+app.get('/', (_req, res) => {
+  res.json({ 
+    message: 'Inventory Management API',
+    version: '1.0.0',
+    endpoints: {
+      products: '/api/products',
+      suppliers: '/api/suppliers',
+      orders: '/api/orders',
+      users: '/api/users',
+      health: '/health'
+    }
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Route not found',
+    path: req.path 
+  });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Global error handler:', err);
+  res.status(err.status || 500).json({ 
+    error: 'Internal server error',
+    message: err.message 
+  });
+});
+
+// For local development
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+  }).catch(err => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
+}
+
+// Export for Vercel
 module.exports = app;

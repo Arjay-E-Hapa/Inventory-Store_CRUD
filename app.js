@@ -30,7 +30,7 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 
 const PORT = process.env.PORT || 3000;
 
-if (process.env.VERCEL) {
+if (!process.env.VERCEL) {
   // Only connect if not already connected (prevents blocking)
   connectDB();
 }

@@ -1,16 +1,14 @@
 {
   "name": "toast",
   "version": "1.0.0",
-  "main": "app.js",
- "scripts": {
-  "start": "node app.js",
-  "dev": "nodemon app.js",
-  "test": "echo \"Error: no test specified\" && exit 1"
-}
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "This project provides a robust RESTful API for managing product inventory, supplier relationships, and sales/purchase orders. It is built with a strong focus on data integrity, utilizing Mongoose Transactions to ensure consistency between Order creation/deletion and Product stock levels.",
   "dependencies": {
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
@@ -21,7 +19,13 @@
     "morgan": "^1.10.1",
     "nodemon": "^3.1.10",
     "sql": "^0.78.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arjay-E-Hapa/Inventory-Store_CRUD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Arjay-E-Hapa/Inventory-Store_CRUD/issues"
+  },
+  "homepage": "https://github.com/Arjay-E-Hapa/Inventory-Store_CRUD#readme"
 }
-
-

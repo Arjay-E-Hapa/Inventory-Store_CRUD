@@ -19,7 +19,7 @@ A complete RESTful API for inventory management built with Node.js, Express, and
 3. Create .env file in project root:
    
    PORT=3000
-MONGODB_URI=MONmongodb+srv://toast_db_user:Toast12345@toast.5eozucr.mongodb.net/?appName=toast
+MONGODB_URI=mongodb+srv://toast_db_user:Toast12345@toast.5eozucr.mongodb.net/?appName=toast
    
 
 4. Start the server:

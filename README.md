@@ -6,7 +6,7 @@ A complete RESTful API for inventory management built with Node.js, Express, and
 
 ### Prerequisites
 - Node.js 18+ 
-- Mongo (local or Atlas)
+- MongoDB (local or Atlas)
 - npm or yarn
 
 ### Installation
@@ -19,7 +19,7 @@ A complete RESTful API for inventory management built with Node.js, Express, and
 3. Create .env file in project root:
    
    PORT=3000
-MONGODB_URI=mongodb+srv://toast_db_user:Toast12345@toast.5eozucr.mongodb.net/?appName=toast
+  MONGODB_URI=mongodb+srv://toast_db_user:Toast12345@toast.5eozucr.mongodb.net/?appName=toast
    
 
 4. Start the server:
@@ -54,7 +54,7 @@ Inventory/
 
 ## 🔗 API Endpoints
 
-Base URL: http://localhost:3000/api
+Base URL: https://inventory-store-crud.vercel.app/api/products
 
 ### Health Check
 - GET /health - API status and health check
@@ -126,7 +126,7 @@ Base URL: http://localhost:3000/api
 ## 🧪 API Testing Examples
 
 ### Create Product
-curl -X POST http://localhost:3000/api/products \
+curl -X POST https://inventory-store-crud.vercel.app//api/products
   -H "Content-Type: application/json" \
   -d '{
     "sku": "SKU-001",
@@ -136,7 +136,7 @@ curl -X POST http://localhost:3000/api/products \
   }'
 
 ### Create Supplier
-curl -X POST http://localhost:3000/api/suppliers \
+curl -X POST https://inventory-store-crud.vercel.app//api/products
   -H "Content-Type: application/json" \
   -d '{
     "name": "Acme Supplies",
@@ -144,7 +144,7 @@ curl -X POST http://localhost:3000/api/suppliers \
   }'
 
 ### Create Order
-curl -X POST http://localhost:3000/api/orders \
+curl -X POST https://inventory-store-crud.vercel.app/api/products
   -H "Content-Type: application/json" \
   -d '{
     "supplierId": "SUPPLIER_OBJECT_ID",
@@ -159,10 +159,10 @@ curl -X POST http://localhost:3000/api/orders \
   }'
 
 ### Get All Products
-curl http://localhost:3000/api/products
+curl https://inventory-store-crud.vercel.app/api/products
 
 ### Health Check
-curl http://localhost:3000/health
+curl https://inventory-store-crud.vercel.app/api/health
 
 ## 🔧 Configuration
 
@@ -172,11 +172,11 @@ curl http://localhost:3000/health
 
 ### MongoDB Atlas Setup
 For MongoDB Atlas, use:
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/inventory?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://toast_db_user:Toast12345@toast.5eozucr.mongodb.net/?appName=toast
 
 ### Local MongoDB Setup
 For local MongoDB:
-MONGO_URI=mongodb://127.0.0.1:27017/inventory
+MONGO_URI=mongodb+srv://toast_db_user:Toast12345@toast.5eozucr.mongodb.net/?appName=toast
 
 ## 🛠️ Development
 

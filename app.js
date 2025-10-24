@@ -33,6 +33,7 @@ const PORT = process.env.PORT || 3000;
 if (process.env.VERCEL) {
   // Only connect if not already connected (prevents blocking)
   connectDB();
+}
 
 // Export for Vercel
 module.exports = app;
